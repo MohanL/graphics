@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>WebGL Ray</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/cs4620.css" rel="stylesheet">
+    <link href="css/jquery-ui.min.css" rel="stylesheet">
+    <link href="css/jquery-ui.theme.min.css" rel="stylesheet">
+    <link href="css/jquery-ui.structure.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="https://greggman.github.io/webgl-lint/webgl-lint.js" crossorigin></script>
+</head>
+<body>
+<div class="container">
+    <h1>WebGL Ray</span></h1>
+
+    <div align="center">
+        <canvas id="webglCanvas" style="border: none; background-color: black;" width="512" height="512"></canvas>
+    </div>
+
+    <br>
+
+    <table class="table table-bordered">
+        <tr>
+            <td align="right">Render Mode:</td>
+            <td>
+                <select id="renderMode">
+                    <option value="FACE_COLOR">Face Color</option>
+                    <option value="NORMAL">Normal</option>
+                    <option value="SHADOW" disabled>Shadow</option>
+                    <option value="FULL">Full Shading</option>
+                </select>
+            </td>
+            <td align="right">Scene:</td>
+            <td>
+                <select id="scene">
+                    <option value="triangle">Triangle Scene</option>
+                    <option value="cube">Cube Scene</option>
+                    <option value="full">Full Scene</option>
+                </select>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" align="center"><b>Model Settings</b></td>
+        </tr>
+        <tr>
+            <td align="right">Model translation:</td>
+            <td>
+                X = <input type="text" id="modelTranslationX" value="1.0">
+            </td>
+            <td>
+                Y = <input type="text" id="modelTranslationY" value="1.0">
+            </td>
+            <td>
+                Z = <input type="text" id="modelTranslationZ" value="1.0">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">Model rotation:</td>
+            <td>
+                X = <input type="text" id="modelRotationX" value="1.0">
+            </td>
+            <td>
+                Y = <input type="text" id="modelRotationY" value="1.0">
+            </td>
+            <td>
+                Z = <input type="text" id="modelRotationZ" value="1.0">
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" align="center"><b>Camera Settings</b></td>
+        </tr>
+        <tr>
+            <td align="right">Camera Eye:</td>
+            <td>
+                X = <input type="text" id="cameraEyeX" value="1.0">
+            </td>
+            <td>
+                Y = <input type="text" id="cameraEyeY" value="1.0">
+            </td>
+            <td>
+                Z = <input type="text" id="cameraEyeZ" value="1.0">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">Camera Target:</td>
+            <td>
+                X = <input type="text" id="cameraTargetX" value="0.0">
+            </td>
+            <td>
+                Y = <input type="text" id="cameraTargetY" value="0.0">
+            </td>
+            <td>
+                Z = <input type="text" id="cameraTargetZ" value="0.0">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">Camera Up:</td>
+            <td>
+                X = <input type="text" id="cameraUpX" value="0.0">
+            </td>
+            <td>
+                Y = <input type="text" id="cameraUpY" value="1.0">
+            </td>
+            <td>
+                Z = <input type="text" id="cameraUpZ" value="0.0">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">Camera Field of View:</td>
+            <td colspan="3">
+                <input type="text" id="cameraFov" value="30.0">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" align="center"><b>Light Settings</b></td>
+        </tr>
+        <tr>
+            <td align="right">Light Position:</td>
+            <td>
+                X = <input type="text" id="lightPositionX" value="1.0">
+            </td>
+            <td>
+                Y = <input type="text" id="lightPositionY" value="1.0">
+            </td>
+            <td>
+                Z = <input type="text" id="lightPositionZ" value="1.0">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">Light Intensity:</td>
+            <td>
+                R = <input type="text" id="lightIntensityR" value="1.0">
+            </td>
+            <td>
+                G = <input type="text" id="lightIntensityG" value="1.0">
+            </td>
+            <td>
+                B = <input type="text" id="lightIntensityB" value="1.0">
+            </td>
+        </tr>
+        <!-- <tr>
+            <td colspan="4" align="center"><b>Background Settings</b></td>
+        </tr> -->
+        <!-- <tr>
+            <td align="right">Background Color:</td>
+            <td>
+                R = <input type="text" id="backgroundColorR" value="0.0">
+            </td>
+            <td>
+                G = <input type="text" id="backgroundColorG" value="0.0">
+            </td>
+            <td>
+                B = <input type="text" id="backgroundColorB" value="0.0">
+            </td>
+        </tr> -->
+    </table>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="js/gl-matrix-min.js"></script>
+<script src="js/jquery-3.1.1.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="scenes.js"></script>
+<script src="webgl_setup.js"></script>
+
+
+<script id="vertexShader" type="x-shader/x-vertex">
+    attribute vec3 position; 
+    attribute vec3 a_normal;
+    attribute vec3 color;
+
+    uniform mat4 uViewMatrix;
+    uniform mat4 uProjectionMatrix;
+    uniform mat4 uModelMatrix;
+
+    uniform vec3 uLightPosition;
+    uniform vec3 uLightIntensity;
+
+    varying vec3 v_normal;
+    varying vec3 vColor;
+    varying vec3 v_surfaceToLight;
+    
+    void main() {
+        vColor = color;
+        v_normal =  (uModelMatrix * vec4(a_normal, 1.0)).xyz;
+        v_normal =  a_normal;
+        vec3 surfaceWorldPosition = normalize(uProjectionMatrix * uViewMatrix  * vec4(position, 1.0)).xyz;
+        vec3 lightWorldPosition = normalize(uProjectionMatrix * uViewMatrix * vec4(uLightPosition, 1.0)).xyz;
+        v_surfaceToLight = normalize(uLightPosition - surfaceWorldPosition);
+        gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(position, 1.0);   
+    }
+</script>
+
+<script id="fragmentShader" type="x-shader/x-fragment">
+    precision highp float;
+
+    varying vec3 vColor;
+    varying vec3 v_surfaceToLight;
+    varying vec3 v_normal;
+    
+    void main() {
+        vec3 normal = normalize(v_normal);
+        float light = dot(normal, v_surfaceToLight);
+        gl_FragColor = vec4(vColor, 1.0);
+        gl_FragColor.rgb *= light;
+    }
+</script>   
+
+<script>
+    function initGui() {
+        ["modelTranslation","cameraEye", "cameraTarget", "cameraUp"].forEach(function (name) {
+            ["X", "Y", "Z"].forEach(function (axis) {
+                var selector = "#" + name + axis;
+                $(selector).spinner({
+                    min: -10.0,
+                    max: 10.0,
+                    step: 0.01,
+                });
+            });
+        });
+
+        $('#modelRotationX').spinner({'min': 0, 'max': 361, 'step': 1});
+        $('#modelRotationY').spinner({'min': 0, 'max': 361, 'step': 1});
+        $('#modelRotationZ').spinner({'min': 0, 'max': 361, 'step': 1});
+        
+
+        // TODO: fix this
+        ["#modelRotationX","#modelRotationY", "#modelRotationZ"].forEach(function (name) {
+        
+            var $inputLoop = $(name);
+            $inputLoop.on("input", function(event) {
+                debugger;
+                var value = $inputLoop.val()
+                value = value % 360
+                $inputLoop.val(value)
+            })
+        })
+
+        $("#cameraFov").spinner({
+            min: 1.0,
+            max: 80.0,
+            step: 1.0
+        });
+        ["lightPositionX", "lightPositionY", "lightPositionZ"].forEach(function (name) {
+            $("#" + name).spinner({
+                min: -100.0,
+                max: 100.0,
+                step: 0.1,
+            });
+        });
+        ["lightIntensityR", "lightIntensityG", "lightIntensityB"].forEach(function (name) {
+            $("#" + name).spinner({
+                min: 0.0,
+                max: 500.0,
+                step: 0.01,
+            });
+        });
+        ["backgroundColorR", "backgroundColorG", "backgroundColorB"].forEach(function (name) {
+            $("#" + name).spinner({
+                min: 0.0,
+                max: 1.0,
+                step: 0.01,
+            });
+        });
+    }
+    initGui();
+
+    var renderModes = {
+        "FACE_COLOR": 1,
+        "NORMAL": 2,
+        "SHADOW": 3,
+        "FULL": 4
+    };
+
+    var scenes = createScenes();
+
+    function setSceneGui(scene) {
+
+        $("#modelTranslationX").spinner("value", 0);
+        $("#modelTranslationY").spinner("value", 0);
+        $("#modelTranslationZ").spinner("value", 0);
+
+        $("#modelRotationX").spinner("value", 0);
+        $("#modelRotationY").spinner("value", 0);
+        $("#modelRotationZ").spinner("value", 0);
+
+        $("#cameraEyeX").spinner("value", scene.initialCamera.eye[0]);
+        $("#cameraEyeY").spinner("value", scene.initialCamera.eye[1]);
+        $("#cameraEyeZ").spinner("value", scene.initialCamera.eye[2]);
+
+        $("#cameraTargetX").spinner("value", scene.initialCamera.target[0]);
+        $("#cameraTargetY").spinner("value", scene.initialCamera.target[1]);
+        $("#cameraTargetZ").spinner("value", scene.initialCamera.target[2]);
+
+        $("#cameraUpX").spinner("value", scene.initialCamera.up[0]);
+        $("#cameraUpY").spinner("value", scene.initialCamera.up[1]);
+        $("#cameraUpZ").spinner("value", scene.initialCamera.up[2]);
+
+        $("#cameraFov").spinner("value", scene.initialCamera.fov);
+
+        $("#lightPositionX").spinner('value', scene.initialLight.position[0]);
+        $("#lightPositionY").spinner('value', scene.initialLight.position[1]);
+        $("#lightPositionZ").spinner('value', scene.initialLight.position[2]);
+
+        $("#lightIntensityR").spinner('value', scene.initialLight.intensity[0]);
+        $("#lightIntensityG").spinner('value', scene.initialLight.intensity[1]);
+        $("#lightIntensityB").spinner('value', scene.initialLight.intensity[2]);
+    }
+
+    function getScene() {
+        return scenes[$("#scene").val()];
+    }
+
+    $("#scene").change(function () {
+        location.reload();
+    });
+
+    $("#renderMode").change(function () {
+        location.reload();
+    });
+
+    setSceneGui(getScene());
+
+    function getRenderMode() {
+        return renderModes[$("#renderMode").val()];
+    }
+
+    function getBackgroundColor() {
+        return [
+            $("#backgroundColorR").spinner("value"),
+            $("#backgroundColorG").spinner("value"),
+            $("#backgroundColorB").spinner("value")
+        ];
+    }
+
+    function getModelTranslation() {
+        return [
+            $("#modelTranslationX").spinner("value"),
+            $("#modelTranslationY").spinner("value"),
+            $("#modelTranslationZ").spinner("value")
+        ]
+    }
+
+    function getModelRotation() {
+        return [
+            $("#modelRotationX").spinner("value"),
+            $("#modelRotationY").spinner("value"),
+            $("#modelRotationZ").spinner("value")
+        ]
+    }
+
+    function getCameraEye() {
+        return [
+            $("#cameraEyeX").spinner("value"),
+            $("#cameraEyeY").spinner("value"),
+            $("#cameraEyeZ").spinner("value")
+        ]
+    }
+
+    function getCameraTarget() {
+        return [
+            $("#cameraTargetX").spinner("value"),
+            $("#cameraTargetY").spinner("value"),
+            $("#cameraTargetZ").spinner("value")
+        ];
+    }
+
+    function getCameraUp() {
+        return [
+            $("#cameraUpX").spinner("value"),
+            $("#cameraUpY").spinner("value"),
+            $("#cameraUpZ").spinner("value")
+        ];
+    }
+
+    function getCameraFov() {
+        return $("#cameraFov").spinner("value")
+    }
+
+    function getLightPosition() {
+        return [
+            $("#lightPositionX").spinner("value"),
+            $("#lightPositionY").spinner("value"),
+            $("#lightPositionZ").spinner("value")
+        ];
+    }
+
+    function getLightIntensity() {
+        return [
+            $("#lightIntensityR").spinner("value"),
+            $("#lightIntensityG").spinner("value"),
+            $("#lightIntensityB").spinner("value")
+        ];
+    }
+
+    function getCameraInfo() {
+        let eye =  this.getCameraEye();
+        let target = this.getCameraTarget();
+        let up = this.getCameraUp();
+        let fov = this.getCameraFov();
+
+        let z = this.vec3Normalize(this.vec3Minus(eye, target));
+        let x = this.vec3Normalize(this.vec3Cross(up, z));
+        let y = this.vec3Normalize(this.vec3Cross(z, x));
+
+        let s = Math.tan(fov/2* Math.PI/180);
+        let d = this.vec3Normalize(-z) // simplify the project at thsi point 
+
+        return {
+            'orthonormal_basis': [x, y ,z],
+            'ray_direction': d
+        }
+    }
+
+    function getLightInfo(){
+        return {
+            'position': this.getLightPosition(),
+            'intensity': this.getLightIntensity(),
+        }
+    }
+
+    function vec3Minus (a, b){
+        return glMatrix.vec3.subtract(glMatrix.vec3.create(), a, b)
+    }
+    function vec3Cross (a, b){
+        return glMatrix.vec3.cross(glMatrix.vec3.create(), a, b)
+    }
+    function vec3Normalize(a){
+        return glMatrix.vec3.normalize(glMatrix.vec3.create(), a)
+    }
+
+    function getEnvironment(){
+        return {
+            'scene': this.getScene(),
+            'renderMode': this.getRenderMode(),
+            // 'camera': this.getCameraInfo(),
+            // 'light': this.getLightInfo(),
+        }
+    }
+
+    //
+    // TODO: Fill you code here and elsewhere in the HTML.
+    //
+
+    runCanvas("webglCanvas", getEnvironment(), function() {
+        // NO-OP
+        return getEnvironment();
+    });
+
+</script>
+
+</body>
+</html>
